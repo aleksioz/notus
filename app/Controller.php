@@ -28,16 +28,32 @@ class Controller
     // Parsed methods
     public function listProductsParsed($limit = 10, $skip = 0, $sortBy = 'id', $order = 'asc') {
         $products = $this->listProducts($limit, $skip, $sortBy, $order);
+
+        if( isset($products['error']) ) {
+            return $products['error'];
+        }
+
         return $this->parser->productList($products);
+
     }
 
     public function getProductParsed($id) {
         $product = $this->getProduct($id);
+
+        if( isset($product['error']) ) {
+            return $product['error'];
+        }
+
         return $this->parser->productDetail($product);
     }
 
     public function searchProductsParsed($query) {
         $products = $this->searchProducts($query);
+
+        if( isset($products['error']) ) {
+            return $products['error'];
+        }
+        
         return $this->parser->productList($products);
     }
 }
