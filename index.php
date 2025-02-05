@@ -19,7 +19,11 @@ $router->before('GET', '/.*', function () {
 
 ////////////// PROVIDER ROUTES //////////////
 $router->get('/products', function () use ($controller) {
-    $products = $controller->listProducts();
+    $limit = $_GET['limit'] ?? 10;
+    $skip = $_GET['skip'] ?? 0;
+    $sortBy = $_GET['sortBy'] ?? 'id';
+    $order = $_GET['order'] ?? 'asc'; // Default
+    $products = $controller->listProducts($limit, $skip, $sortBy, $order);
     echo json_encode($products, JSON_PRETTY_PRINT);
 });
 
@@ -28,12 +32,30 @@ $router->get('/products/(\d+)', function ($id) use ($controller) {
     echo json_encode($product, JSON_PRETTY_PRINT);
 });
 
-$router->get('/products/search/(\w+)', function ($query) use ($controller) {
+$router->get('/products/search', function () use ($controller) {
+    $query = $_GET['q'] ?? '';
 	$products = $controller->searchProducts($query);
 	echo json_encode($products, JSON_PRETTY_PRINT);
 });
 
 ////////////// PARSER ROUTES //////////////
+$router->get('/parsed/products', function () use ($controller) {
+    $products = $controller->listProductsParsed();
+    echo json_encode($products, JSON_PRETTY_PRINT);
+});
+
+$router->get('/parsed/products/(\d+)', function ($id) use ($controller) {
+    $product = $controller->getProductParsed($id);
+    echo json_encode($product, JSON_PRETTY_PRINT);
+});
+
+$router->get('/parsed/products/search', function () use ($controller) {
+    $query = $_GET['q'] ?? '';
+    $products = $controller->searchProductsParsed($query);
+    echo json_encode($products, JSON_PRETTY_PRINT);
+});
+
+
 
 
 // Home route
